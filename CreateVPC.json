@@ -490,8 +490,6 @@
         "VpcId" : { "Ref" : "MainVPC" }
       }
     }
-
-
   },
   "Outputs" : {
     "MainVPCOutput" : {
