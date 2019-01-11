@@ -7,7 +7,6 @@
       "Type": "String"
     }
   },
-  
   "Resources": {
     "EIP": {
       "Type" : "AWS::EC2::EIP",

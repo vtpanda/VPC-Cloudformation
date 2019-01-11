@@ -15,7 +15,6 @@
 # 8. Look into seeing if we should do stack-sets
 
 
-
 cmd=$1
 vpcname=UsEast1VPC1
 profile=myaws
