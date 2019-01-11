@@ -1,0 +1,534 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description": "VPC Base Instantiation; Note that this is only IPv4",
+  "Parameters": {
+    "VPCName": {
+      "Description": "Identifier to use for the VPC.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "MainVPC": {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "EnableDnsSupport" : true,
+        "EnableDnsHostnames" : true,
+        "InstanceTenancy" : "default",
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "VPC - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      }
+    },
+    "VPCInternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+        "Properties" : {
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "InternetGateway - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      }
+    },
+    "VPCInternetGatewayAttachment" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "InternetGatewayId" : { "Ref" : "VPCInternetGateway" },
+        "VpcId" : { "Ref" : "MainVPC" }
+      },
+      "DependsOn": [ "VPCInternetGateway", "MainVPC" ]
+    } ,
+    "PublicRouteTable": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      },
+      "DependsOn": [ "MainVPC" ]
+    },
+    "PrivateRouteTable": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      },
+      "DependsOn": [ "MainVPC" ]
+    },
+    "PublicRouteInternet": {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "RouteTableId" : { "Ref" : "PublicRouteTable" },
+        "GatewayId" : { "Ref" : "VPCInternetGateway" }
+      },
+      "DependsOn": [ "VPCInternetGatewayAttachment", "PublicRouteTable" ]
+    },
+    "PublicNACL": {
+      "Type" : "AWS::EC2::NetworkAcl",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      },
+      "DependsOn": [ "MainVPC" ]
+    },
+    "PrivateNACL": {
+      "Type" : "AWS::EC2::NetworkAcl",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      },
+      "DependsOn": [ "MainVPC" ]
+    }
+
+    ,
+    "PublicNACLEntrySSHInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryHTTPInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryHTTPSInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryEphemeralInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntrySSHOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryHTTPOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryHTTPSOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryEphemeralOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      },
+      "DependsOn": [ "PublicNACL" ]
+    },
+    "PublicNACLEntryMySQLOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PublicNACL" },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      },
+      "DependsOn": [ "PublicNACL" ]
+    }
+
+
+
+
+    ,
+    "PrivateNACLEntrySSHInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryHTTPInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryHTTPSInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryEphemeralInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryMySQLInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    }
+
+
+    ,
+    "PrivateNACLEntrySSHOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryHTTPOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryHTTPSOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryEphemeralOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "PrivateNACLEntryMySQLOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Ref" : "PrivateNACL" },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      },
+      "DependsOn": [ "PrivateNACL" ]
+    },
+    "SQLDMZ": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "SQLDMZ",
+        "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
+        "SecurityGroupIngress" : [
+          {
+            "CidrIp" : "10.0.0.0/16",
+            "FromPort" : 22,
+            "ToPort" : 22,
+            "IpProtocol" : 6
+          },
+          {
+            "CidrIp" : "10.0.0.0/16",
+            "FromPort" : 3306,
+            "ToPort" : 3306,
+            "IpProtocol" : 6
+          }
+        ],
+        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SQLDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "SSHDMZ": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "SSHDMZ",
+        "GroupDescription" : "Limits inbound traffic to only SSH from anywhere in the world.",
+        "SecurityGroupIngress" : [
+          {
+            "CidrIp" : "0.0.0.0/0",
+            "FromPort" : 22,
+            "ToPort" : 22,
+            "IpProtocol" : 6
+          }
+        ],
+        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "WebDMZ": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "WebDMZ",
+        "GroupDescription" : "Limits inbound traffic to only SSH and HTTP(S) from anywhere in the world.",
+        "SecurityGroupIngress" : [
+          {
+            "CidrIp" : "0.0.0.0/0",
+            "FromPort" : 22,
+            "ToPort" : 22,
+            "IpProtocol" : 6
+          },
+          {
+            "CidrIp" : "0.0.0.0/0",
+            "FromPort" : 80,
+            "ToPort" : 80,
+            "IpProtocol" : 6
+          },
+          {
+            "CidrIp" : "0.0.0.0/0",
+            "FromPort" : 443,
+            "ToPort" : 443,
+            "IpProtocol" : 6
+          }
+        ],
+        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - WebDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "RDSDMZ": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "RDSDMZ",
+        "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
+        "SecurityGroupIngress" : [
+          {
+            "CidrIp" : "10.0.0.0/16",
+            "FromPort" : 3306,
+            "ToPort" : 3306,
+            "IpProtocol" : 6
+          }
+        ],
+        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - RDSDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "SSHDMZPrivate": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "SSHDMZ - Private",
+        "GroupDescription" : "Limits inbound traffic to only SSH from within the VPC.",
+        "SecurityGroupIngress" : [
+          {
+            "CidrIp" : "10.0.0.0/16",
+            "FromPort" : 22,
+            "ToPort" : 22,
+            "IpProtocol" : 6
+          }
+        ],
+        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    }
+
+
+  },
+  "Outputs" : {
+    "MainVPCOutput" : {
+      "Description" : "VPC",
+      "Value" : { "Ref" : "MainVPC" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+
+    "PublicRouteTableOutput" : {
+      "Description" : "Public Route Table",
+      "Value" : { "Ref" : "PublicRouteTable" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateRouteTableOutput" : {
+      "Description" : "Private Route Table",
+      "Value" : { "Ref" : "PrivateRouteTable" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicNACLOutput" : {
+      "Description" : "Public NACL",
+      "Value" : { "Ref" : "PublicNACL" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateNACLOutput" : {
+      "Description" : "Private NACL",
+      "Value" : { "Ref" : "PrivateNACL" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    }
+  }
+}

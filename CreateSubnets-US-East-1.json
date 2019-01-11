@@ -1,0 +1,447 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description": "Subnet Instantiation for a VPC in US-East-1; Note that this is only IPv4",
+  "Parameters": {
+    "VPCName": {
+      "Description": "Identifier to use for the VPC.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "PublicSubnet1a": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1a",
+        "CidrBlock" : "10.0.1.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.1.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PublicSubnet1b": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1b",
+        "CidrBlock" : "10.0.2.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.2.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PublicSubnet1c": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1c",
+        "CidrBlock" : "10.0.3.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.3.0 - us-east-1c - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PublicSubnet1d": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1d",
+        "CidrBlock" : "10.0.4.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.4.0 - us-east-1d - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PublicSubnet1e": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1e",
+        "CidrBlock" : "10.0.5.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.5.0 - us-east-1e - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PublicSubnet1f": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1f",
+        "CidrBlock" : "10.0.6.0/24",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.6.0 - us-east-1f - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1a": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1a",
+        "CidrBlock" : "10.0.11.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.11.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1b": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1b",
+        "CidrBlock" : "10.0.12.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.12.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1c": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1c",
+        "CidrBlock" : "10.0.13.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.13.0 - us-east-1c - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1d": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1d",
+        "CidrBlock" : "10.0.14.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.14.0 - us-east-1d - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1e": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1e",
+        "CidrBlock" : "10.0.15.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.15.0 - us-east-1e - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+    "PrivateSubnet1f": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "AvailabilityZone" : "us-east-1f",
+        "CidrBlock" : "10.0.16.0/24",
+        "MapPublicIpOnLaunch" : false,
+        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.16.0 - us-east-1f - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      }
+    },
+
+
+    "SubnetAssocPublic1a" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1a" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1a" ]
+    },
+
+    "RouteTableAssocPublic1a": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1a" }
+      },
+      "DependsOn": [ "PublicSubnet1a" ]
+    },
+
+
+    "SubnetAssocPublic1b" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1b" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1b" ]
+    },
+
+    "RouteTableAssocPublic1b": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1b" }
+      },
+      "DependsOn": [ "PublicSubnet1b" ]
+    },
+
+
+    "SubnetAssocPublic1c" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1c" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1c" ]
+    },
+
+    "RouteTableAssocPublic1c": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1c" }
+      },
+      "DependsOn": [ "PublicSubnet1c" ]
+    },
+
+
+    "SubnetAssocPublic1d" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1d" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1d" ]
+    },
+
+    "RouteTableAssocPublic1d": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1d" }
+      },
+      "DependsOn": [ "PublicSubnet1d" ]
+    },
+
+
+    "SubnetAssocPublic1e" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1e" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1e" ]
+    },
+
+    "RouteTableAssocPublic1e": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1e" }
+      },
+      "DependsOn": [ "PublicSubnet1e" ]
+    },
+
+
+    "SubnetAssocPublic1f" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1f" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PublicSubnet1f" ]
+    },
+
+    "RouteTableAssocPublic1f": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PublicSubnet1f" }
+      },
+      "DependsOn": [ "PublicSubnet1f" ]
+    },
+
+
+    "SubnetAssocPrivate1a" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1a" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1a" ]
+    },
+
+    "RouteTableAssocPrivate1a": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1a" }
+      },
+      "DependsOn": [ "PrivateSubnet1a" ]
+    },
+
+
+    "SubnetAssocPrivate1b" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1b" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1b" ]
+    },
+
+    "RouteTableAssocPrivate1b": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1b" }
+      },
+      "DependsOn": [ "PrivateSubnet1b" ]
+    },
+
+
+    "SubnetAssocPrivate1c" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1c" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1c" ]
+    },
+
+    "RouteTableAssocPrivate1c": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1c" }
+      },
+      "DependsOn": [ "PrivateSubnet1c" ]
+    },
+
+
+    "SubnetAssocPrivate1d" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1d" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1d" ]
+    },
+
+    "RouteTableAssocPrivate1d": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1d" }
+      },
+      "DependsOn": [ "PrivateSubnet1d" ]
+    },
+
+
+    "SubnetAssocPrivate1e" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1e" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1e" ]
+    },
+
+    "RouteTableAssocPrivate1e": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1e" }
+      },
+      "DependsOn": [ "PrivateSubnet1e" ]
+    },
+
+
+    "SubnetAssocPrivate1f" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1f" },
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      },
+      "DependsOn": [ "PrivateSubnet1f" ]
+    },
+
+    "RouteTableAssocPrivate1f": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Ref" : "PrivateSubnet1f" }
+      },
+      "DependsOn": [ "PrivateSubnet1f" ]
+    }
+  },
+  "Outputs" : {
+    "PublicSubnet1aOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1a" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicSubnet1bOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1b" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicSubnet1cOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1c" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1c-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicSubnet1dOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1d" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1d-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicSubnet1eOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1e" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1e-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PublicSubnet1fOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PublicSubnet1f" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Public-us-east-1f-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+
+    "PrivateSubnet1aOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1a" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateSubnet1bOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1b" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateSubnet1cOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1c" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1c-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateSubnet1dOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1d" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1d-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "Privateubnet1eOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1e" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1e-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    },
+    "PrivateSubnet1fOutput" : {
+      "Description" : "Information about the value",
+      "Value" : { "Ref" : "PrivateSubnet1f" },
+      "Export" : {
+        "Name" : { "Fn::Sub": [ "Private-us-east-1f-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
+      }
+    }
+  }
+}
