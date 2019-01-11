@@ -15,13 +15,13 @@
         "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
         "SecurityGroupIngress" : [
           {
-            "CidrIp" : "10.0.0.0/16",
+            "SourceSecurityGroupId" : { "Ref" : "WebDMZ" },
             "FromPort" : 22,
             "ToPort" : 22,
             "IpProtocol" : 6
           },
           {
-            "CidrIp" : "10.0.0.0/16",
+            "SourceSecurityGroupId" : { "Ref" : "WebDMZ" },
             "FromPort" : 3306,
             "ToPort" : 3306,
             "IpProtocol" : 6
@@ -84,7 +84,7 @@
         "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
         "SecurityGroupIngress" : [
           {
-            "CidrIp" : "10.0.0.0/16",
+            "SourceSecurityGroupId" : { "Ref" : "WebDMZ" },
             "FromPort" : 3306,
             "ToPort" : 3306,
             "IpProtocol" : 6

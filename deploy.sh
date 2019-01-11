@@ -12,13 +12,14 @@
 # 6. Add ability to update stack
 # 7. Pull out Routes, NetworkAclEntryies, and SecurityGroups into their own stacks
 # 7.1 Perhaps we can figure out how to have different sets of routes and NetworkAclEntries based on different stacks
-# 8 Convert to Python?
+# 8. Convert to Python?
+# 9. Test out making updates to the stacks.  Especially regarding adding and removing routes and nacl entries.
 
 
 
 
 cmd=$1
-vpcname=UsEast1VPC1
+vpcname=WordPress
 profile=myaws
 region=$(aws configure get region --profile $profile)
 deploymentfolders3=s3://vtpanda-deployment-$region/vpc/$vpcname
