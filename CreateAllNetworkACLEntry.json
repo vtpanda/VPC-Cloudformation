@@ -1,0 +1,299 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description": "NACL Entries for a VPC; Note that this is only IPv4",
+  "Parameters": {
+    "VPCName": {
+      "Description": "Identifier to use for the VPC.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "PublicNACLEntrySSHInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      }
+    },
+    "PublicNACLEntryHTTPInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      }
+    },
+    "PublicNACLEntryHTTPSInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      }
+    },
+    "PublicNACLEntryEphemeralInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      }
+    },
+    "PublicNACLEntrySSHOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      }
+    },
+    "PublicNACLEntryHTTPOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      }
+    },
+    "PublicNACLEntryHTTPSOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      }
+    },
+    "PublicNACLEntryEphemeralOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "0.0.0.0/0",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      }
+    },
+    "PublicNACLEntryMySQLOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      }
+    },
+
+
+    "PrivateNACLEntrySSHInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      }
+    },
+    "PrivateNACLEntryHTTPInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      }
+    },
+    "PrivateNACLEntryHTTPSInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      }
+    },
+    "PrivateNACLEntryEphemeralInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      }
+    },
+    "PrivateNACLEntryMySQLInbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : false,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      }
+    },
+    "PrivateNACLEntrySSHOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 22,
+          "To" : 22
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 100
+      }
+    },
+    "PrivateNACLEntryHTTPOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 80,
+          "To" : 80
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 200
+      }
+    },
+    "PrivateNACLEntryHTTPSOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 443,
+          "To" : 443
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 300
+      }
+    },
+    "PrivateNACLEntryEphemeralOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 32768,
+          "To" : 60999
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 400
+      }
+    },
+    "PrivateNACLEntryMySQLOutbound": {
+      "Type" : "AWS::EC2::NetworkAclEntry",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Egress" : true,
+        "NetworkAclId" : { "Fn::ImportValue": { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "PortRange" : {
+          "From" : 3306,
+          "To" : 3306
+        },
+        "Protocol" : 6,
+        "RuleAction" : "allow",
+        "RuleNumber" : 500
+      }
+    }
+  }
+}

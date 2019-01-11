@@ -17,9 +17,11 @@
   "NatGateway": {
     "Type" : "AWS::EC2::NatGateway",
     "Properties" : {
-      "AllocationId" : { "Ref" : "EIP" },
-      "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      "AllocationId" : {
+            "Fn::GetAtt" : ["EIP", "AllocationId"]
+          },
+      "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
     },
     "DependsOn": [ "EIP" ]
   },
@@ -27,7 +29,7 @@
     "Type" : "AWS::EC2::Route",
     "Properties" : {
       "DestinationCidrBlock" : "0.0.0.0/0",
-      "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+      "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
       "NatGatewayId" : { "Ref" : "NatGateway" }
       },
       "DependsOn": [ "NatGateway" ]
@@ -59,7 +61,7 @@
         },
         "Protocol" : 6,
         "RuleAction" : "allow",
-        "RuleNumber" : 600
+        "RuleNumber" : 700
       }
     },
     "PrivateNACLEntryEphemeralInboundInternet": {
@@ -74,7 +76,7 @@
         },
         "Protocol" : 6,
         "RuleAction" : "allow",
-        "RuleNumber" : 600
+        "RuleNumber" : 800
       }
     }
   }
