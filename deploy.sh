@@ -2,22 +2,6 @@
 #profile must be set up
 #region is taken from the profile that is sent
 
-
-# Things to add:
-# 1. Add command line switch for creating natgateway or not
-# 2. Add command line switch for removing natgateway
-# 3. Add vpcname to commandline
-# 4. Add profile name to commandline
-# 5. Add deployment path to commandline
-# 6. Add ability to update stack
-# 7. Pull out Routes, NetworkAclEntryies, and SecurityGroups into their own stacks
-# 7.1 Perhaps we can figure out how to have different sets of routes and NetworkAclEntries based on different stacks
-# 8. Convert to Python?
-# 9. Test out making updates to the stacks.  Especially regarding adding and removing routes and nacl entries.
-
-
-
-
 cmd=$1
 vpcname=WordPress
 profile=myaws
@@ -155,6 +139,12 @@ elif [[ "$cmd" == "create" ]]; then
   fi
   echo "$subnetstackname Deployed Successfully"
 
+
+  echo "Deploy Done."
+
+elif [[ "$cmd" == "addnatgateway" ]]; then
+  echo "$subnetstackname Deployed Successfully"
+
   echo "Deploying the stack $natgatewaystackname"
   aws cloudformation create-stack --stack-name $natgatewaystackname --template-url $deploymentfolderhttp/CreateNatGateway-US-East-1.json --parameters ParameterKey=VPCName,ParameterValue=$vpcname --region $region --profile $profile
   aws cloudformation wait stack-create-complete --stack-name $natgatewaystackname --region $region --profile $profile
@@ -165,7 +155,6 @@ elif [[ "$cmd" == "create" ]]; then
   fi
   echo "$natgatewaystackname Deployed Successfully"
 
-  echo "Deploy Done."
 else
   echo "Invalid Command"
 fi

@@ -355,6 +355,14 @@
         "SubnetId" : { "Ref" : "PrivateSubnet1f" }
       },
       "DependsOn": [ "PrivateSubnet1f" ]
+    },
+    "RDSDBSubnetGroup": {
+      "Type" : "AWS::RDS::DBSubnetGroup",
+      "Properties" : {
+        "DBSubnetGroupDescription" : { "Fn::Sub": [ "rdssubnet - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]},
+        "DBSubnetGroupName" : { "Fn::Sub": [ "rdssubnet - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]},
+        "SubnetIds" : [ { "Ref" : "PrivateSubnet1a" }, { "Ref" : "PrivateSubnet1b" }, { "Ref" : "PrivateSubnet1c" }, { "Ref" : "PrivateSubnet1d" }, { "Ref" : "PrivateSubnet1e" }, { "Ref" : "PrivateSubnet1f" } ]
+      }
     }
   },
   "Outputs" : {
