@@ -155,6 +155,17 @@ elif [[ "$cmd" == "addnatgateway" ]]; then
   fi
   echo "$natgatewaystackname Deployed Successfully"
 
+elif [[ "$cmd" == "removenatgateway" ]]; then
+  echo "Deleting stack $natgatewaystackname."
+  aws cloudformation delete-stack --stack-name $natgatewaystackname --region $region --profile $profile
+  aws cloudformation wait stack-delete-complete --stack-name $natgatewaystackname --region $region --profile $profile
+  if test "$?" != "0"
+  then
+      echo "$natgatewaystackname Did Not Return in a Timely Manner"
+      exit $?
+  fi
+  echo "$natgatewaystackname Deleted Successfully"
+
 else
   echo "Invalid Command"
 fi
