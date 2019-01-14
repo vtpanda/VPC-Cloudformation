@@ -1,0 +1,7 @@
+{
+  "profile": "myaws",
+  "cmd": "create",
+  "vpcname": "WordPress",
+  "uploadbucket": "vtpanda-deployment-us-east-1",
+  "uploadpath": "/vpc/WordPress/"
+}
