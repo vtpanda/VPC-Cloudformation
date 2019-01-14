@@ -1,7 +1,7 @@
 {
   "profile": "myaws",
-  "cmd": "create",
+  "cmd": "remove",
   "vpcname": "WordPress",
   "uploadbucket": "vtpanda-deployment-us-east-1",
-  "uploadpath": "/vpc/WordPress/"
+  "uploadpath": "vpc/WordPress/"
 }
