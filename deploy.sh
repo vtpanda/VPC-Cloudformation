@@ -1,8 +1,13 @@
 #!/bin/bash
+cmd=$1
+
+if [[ -z "$cmd" ]]; then
+    cmd=none
+fi
 
 if [ -e ./deploy-parameters.json ]
 then
-    python3 ./deploy.py "$(< ./deploy-parameters.json)"
+    python3 ./deploy.py $cmd "$(< ./deploy-parameters.json)"
 else
-    python3 ./deploy.py
+    echo "deploy-parameters.json not found"
 fi

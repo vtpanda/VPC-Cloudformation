@@ -11,10 +11,16 @@ from botocore.exceptions import ClientError
 
 today = datetime.datetime.now()
 
-commandargs = '{"profile": "none", "cmd": "create", "vpcname": "WordPress", "uploadbucket": "deploymentbucket", "uploadpath": "vpc/WordPress/"}'
+commandargs = ''
+
+cmd = "none"
+
+if len(sys.argv) > 2:
+    commandargs = sys.argv[2]
 
 if len(sys.argv) > 1:
-    commandargs = sys.argv[1]
+    cmd = sys.argv[1]
+
 
 params = json.loads(commandargs)
 
@@ -26,10 +32,12 @@ if profile == "none":
 else:
     session = boto3.Session(profile_name=profile)
 
-cmd = params.get("cmd", "create")
+
 vpcname = params.get("vpcname", "none")
 uploadbucket = params.get("uploadbucket", "none")
 uploadpath = params.get("uploadpath", "none")
+natgateway = params.get("natgateway", "no")
+publicssh = params.get("publicssh", "no")
 
 #####Don't worry about these parameters
 region = session.region_name
@@ -44,20 +52,27 @@ filelist.append({ "FileName": "deploy-parameters.json" })
 stacklist = []
 stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
 stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
-# stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
-# stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-# stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
-stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
-stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
+
+if publicssh == "yes":
+    stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+    stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+else:
+    stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
+    stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
+
+if natgateway == "yes":
+    stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+
 
 deletestacklist = []
+deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
 deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
 deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
-# deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
-# deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-# deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
 deletestacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
 deletestacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
+
 
 ######
 
@@ -147,18 +162,9 @@ elif cmd == "remove":
     msg = 'Remove process finished'
     logger.info(msg)
 
-elif cmd == "update":
-    msg = 'Update process has not been implemented yet.'
-    logger.info(msg)
-    # msg = 'Update process started'
-    # logger.info(msg)
-    #
-    #
-    # msg = 'Update process finished'
-    # logger.info(msg)
 
 else:
-    msg = 'Invalid Command'
+    msg = 'Invalid Command: ' + cmd
     logger.error(msg)
 
 msg = 'Ending Process'
