@@ -31,13 +31,23 @@ uploadpath = params.get("uploadpath", "none")
 
 #####Don't worry about these parameters
 region = session.region_name
+deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
+deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
+
+stacklist = []
+
+stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
+stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
+stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
+stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
 vpcstackname = vpcname
 subnetstackname = vpcname + "-Subnet-" + region
 natgatewaystackname = vpcname + "-NatGateway-" + region
 naclentrystackname = vpcname + "-NaclEntry-" + region
 securitygroupstackname = vpcname + "-SecurityGroup-" + region
-deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
-deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
 ######
 
 
@@ -133,7 +143,7 @@ if cmd == "remove":
         msg = "Something bad just happened."
         print(msg)
         logger.info(msg)
-        
+
     msg = 'Remove process finished'
     print(msg)
     logger.info(msg)
