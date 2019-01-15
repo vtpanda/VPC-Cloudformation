@@ -6,6 +6,8 @@ import logging
 import sys
 import json
 import datetime
+from botocore.exceptions import ClientError
+
 
 today = datetime.datetime.now()
 
@@ -34,20 +36,29 @@ region = session.region_name
 deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
 deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
 
-stacklist = []
+filelist = []
+filelist.append({ "FileName": "deploy.sh" })
+filelist.append({ "FileName": "deploy.py" })
+filelist.append({ "FileName": "deploy-parameters.json" })
 
+stacklist = []
 stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
 stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
-stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
-stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+# stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+# stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+# stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
 stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
 stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
-vpcstackname = vpcname
-subnetstackname = vpcname + "-Subnet-" + region
-natgatewaystackname = vpcname + "-NatGateway-" + region
-naclentrystackname = vpcname + "-NaclEntry-" + region
-securitygroupstackname = vpcname + "-SecurityGroup-" + region
+
+deletestacklist = []
+deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
+deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
+# deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+# deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+# deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+deletestacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
+deletestacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
+
 ######
 
 
@@ -66,84 +77,89 @@ logger.addHandler(watchtower.CloudWatchLogHandler(log_group=logGroup))
 
 
 msg = 'Beginning Process'
-print(msg)
 logger.info(msg)
 
 if cmd == "create":
     msg = 'Create process started'
-    print(msg)
     logger.info(msg)
 
 
     try:
         msg = 'Uploading Files'
-        print(msg)
         logger.info(msg)
-        s3.upload_file(Filename="./CreateVPC.json", Bucket=uploadbucket, Key=uploadpath + "CreateVPC.json")
-        s3.upload_file(Filename="./CreateSubnet-US-East-1.json", Bucket=uploadbucket, Key=uploadpath + "CreateSubnet-US-East-1.json")
-        s3.upload_file(Filename="./CreateNatGateway-US-East-1.json", Bucket=uploadbucket, Key=uploadpath + "CreateNatGateway-US-East-1.json")
-        s3.upload_file(Filename="./CreateAllNetworkACLEntry.json", Bucket=uploadbucket, Key=uploadpath + "CreateAllNetworkACLEntry.json")
-        s3.upload_file(Filename="./CreateAllSecurityGroup.json", Bucket=uploadbucket, Key=uploadpath + "CreateAllSecurityGroup.json")
-        s3.upload_file(Filename="./CreateAllNetworkACLEntryNoPublicSSH.json", Bucket=uploadbucket, Key=uploadpath + "CreateAllNetworkACLEntryNoPublicSSH.json")
-        s3.upload_file(Filename="./CreateAllSecurityGroupNoPublicSSH.json", Bucket=uploadbucket, Key=uploadpath + "CreateAllSecurityGroupNoPublicSSH.json")
-        s3.upload_file(Filename="./deploy.sh", Bucket=uploadbucket, Key=uploadpath + "deploy.sh")
-        s3.upload_file(Filename="./deploy.py", Bucket=uploadbucket, Key=uploadpath + "deploy.py")
-        s3.upload_file(Filename="./deploy-parameters.json", Bucket=uploadbucket, Key=uploadpath + "deploy-parameters.json")
+
+        for x in filelist:
+            s3.upload_file(Filename="./" + x["FileName"], Bucket=uploadbucket, Key=uploadpath + x["FileName"])
+
+        for y in stacklist:
+            s3.upload_file(Filename="./" + y["StackTemplateName"], Bucket=uploadbucket, Key=uploadpath + y["StackTemplateName"])
+
         msg = 'Done Uploading Files'
-        print(msg)
         logger.info(msg)
 
+        for z in stacklist:
+            msg = "Deploying the stack " + z["StackName"]
+            logger.info(msg)
 
-        msg = "Deploying the stack " + vpcstackname
-        print(msg)
-        logger.info(msg)
+            response = cloudformation.create_stack(StackName=z["StackName"], TemplateURL=deploymentfolderhttp + z["StackTemplateName"], Parameters= [ { "ParameterKey": "VPCName", "ParameterValue": vpcname } ] )
 
-        response = cloudformation.create_stack(StackName=vpcstackname, TemplateURL=deploymentfolderhttp + "CreateVPC.json", Parameters= [ { "ParameterKey": "VPCName", "ParameterValue": vpcname } ] )
+            vpcstackid = response["StackId"]
 
-        vpcstackid = response["StackId"]
+            createwaiter.wait(StackName=z["StackName"],
+            WaiterConfig={
+                'Delay': 30,
+                'MaxAttempts': 120
+            })
 
-        createwaiter.wait(StackName=vpcstackname,
-        WaiterConfig={
-            'Delay': 30,
-            'MaxAttempts': 120
-        })
+            msg = z["StackName"] + " Deployed Successfully with StackId: " + vpcstackid
+            logger.info(msg)
 
-        msg = vpcstackname + " Deployed Successfully with StackId: " + vpcstackid
-        print(msg)
-        logger.info(msg)
-    except:
-        msg = "Something bad just happened."
-        print(msg)
-        logger.info(msg)
+
+    except ClientError as e:
+        logger.error("Received error: %s", e, exc_info=True)
+
     msg = "Create process finished"
-    print(msg)
     logger.info(msg)
-if cmd == "remove":
+
+elif cmd == "remove":
     msg = 'Remove process started'
-    print(msg)
     logger.info(msg)
 
     try:
-        msg = "Removing the stack " + vpcstackname
-        print(msg)
-        logger.info(msg)
+        for z in deletestacklist:
+            msg = "Removing the stack " + z["StackName"]
+            logger.info(msg)
 
-        cloudformation.delete_stack(StackName=vpcstackname)
+            cloudformation.delete_stack(StackName=z["StackName"])
 
-        deletewaiter.wait(StackName=vpcstackname,
-        WaiterConfig={
-            'Delay': 30,
-            'MaxAttempts': 120
-        })
+            deletewaiter.wait(StackName=z["StackName"],
+            WaiterConfig={
+                'Delay': 30,
+                'MaxAttempts': 120
+            })
 
-        msg = vpcstackname + " Removed Successfully"
-        print(msg)
-        logger.info(msg)
-    except:
-        msg = "Something bad just happened."
-        print(msg)
-        logger.info(msg)
+            msg = z["StackName"] + " Removed Successfully"
+            logger.info(msg)
+
+    except ClientError as e:
+        logger.error("Received error: %s", e, exc_info=True)
 
     msg = 'Remove process finished'
-    print(msg)
     logger.info(msg)
+
+elif cmd == "update":
+    msg = 'Update process has not been implemented yet.'
+    logger.info(msg)
+    # msg = 'Update process started'
+    # logger.info(msg)
+    #
+    #
+    # msg = 'Update process finished'
+    # logger.info(msg)
+
+else:
+    msg = 'Invalid Command'
+    logger.error(msg)
+
+msg = 'Ending Process'
+logger.info(msg)
