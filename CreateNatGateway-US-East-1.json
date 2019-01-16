@@ -14,7 +14,7 @@
       "Domain" : "vpc"
     }
   },
-  "NatGateway": {
+  "NatGatewayUsEast1a": {
     "Type" : "AWS::EC2::NatGateway",
     "Properties" : {
       "AllocationId" : {
@@ -30,7 +30,7 @@
     "Properties" : {
       "DestinationCidrBlock" : "0.0.0.0/0",
       "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-      "NatGatewayId" : { "Ref" : "NatGateway" }
+      "NatGatewayId" : { "Ref" : "NatGatewayUsEast1a" }
       },
       "DependsOn": [ "NatGateway" ]
     },

@@ -8,97 +8,7 @@ import json
 import datetime
 from botocore.exceptions import ClientError
 
-
-today = datetime.datetime.now()
-
-commandargs = ''
-
-cmd = "none"
-
-if len(sys.argv) > 2:
-    commandargs = sys.argv[2]
-
-if len(sys.argv) > 1:
-    cmd = sys.argv[1]
-
-
-params = json.loads(commandargs)
-
-
-profile = params.get("profile", "none")
-
-if profile == "none":
-    session = boto3.Session()
-else:
-    session = boto3.Session(profile_name=profile)
-
-
-vpcname = params.get("vpcname", "none")
-uploadbucket = params.get("uploadbucket", "none")
-uploadpath = params.get("uploadpath", "none")
-natgateway = params.get("natgateway", "no")
-publicssh = params.get("publicssh", "no")
-
-#####Don't worry about these parameters
-region = session.region_name
-deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
-deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
-
-filelist = []
-filelist.append({ "FileName": "deploy.sh" })
-filelist.append({ "FileName": "deploy.py" })
-filelist.append({ "FileName": "deploy-parameters.json" })
-
-stacklist = []
-stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
-stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
-
-if publicssh == "yes":
-    stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-    stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
-else:
-    stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
-    stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
-
-if natgateway == "yes":
-    stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
-
-
-deletestacklist = []
-deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
-deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
-deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
-deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
-deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-deletestacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
-deletestacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
-
-
-######
-
-
-cloudformation = session.client('cloudformation')
-createwaiter = cloudformation.get_waiter('stack_create_complete')
-deletewaiter = cloudformation.get_waiter('stack_delete_complete')
-s3 = session.client('s3')
-
-
-
-logging.basicConfig(level=logging.INFO)
-
-logger = logging.getLogger('VPC-load-process-' + vpcname + '-'+str((today-datetime.datetime(1970,1,1)).total_seconds()))
-logGroup = '/VPC-load-process/' + vpcname
-logger.addHandler(watchtower.CloudWatchLogHandler(log_group=logGroup))
-
-
-msg = 'Beginning Process'
-logger.info(msg)
-
-if cmd == "create":
-    msg = 'Create process started'
-    logger.info(msg)
-
-
+def perform_installation(filelist, stacklist):
     try:
         msg = 'Uploading Files'
         logger.info(msg)
@@ -133,13 +43,7 @@ if cmd == "create":
     except ClientError as e:
         logger.error("Received error: %s", e, exc_info=True)
 
-    msg = "Create process finished"
-    logger.info(msg)
-
-elif cmd == "remove":
-    msg = 'Remove process started'
-    logger.info(msg)
-
+def perform_removal(deletestacklist):
     try:
         for z in deletestacklist:
             msg = "Removing the stack " + z["StackName"]
@@ -158,6 +62,130 @@ elif cmd == "remove":
 
     except ClientError as e:
         logger.error("Received error: %s", e, exc_info=True)
+
+
+today = datetime.datetime.now()
+
+# if __name__ == "__main__":
+
+
+commandargs = ''
+
+cmd = "none"
+
+if len(sys.argv) > 2:
+    commandargs = sys.argv[2]
+
+if len(sys.argv) > 1:
+    cmd = sys.argv[1]
+
+
+params = json.loads(commandargs)
+
+
+profile = params.get("profile", "none")
+
+if profile == "none":
+    session = boto3.Session()
+else:
+    session = boto3.Session(profile_name=profile)
+
+
+vpcname = params.get("vpcname", "none")
+uploadbucket = params.get("uploadbucket", "none")
+uploadpath = params.get("uploadpath", "none")
+natgateway = params.get("natgateway", "no")
+publicssh = params.get("publicssh", "no")
+region = session.region_name
+deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
+deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
+
+cloudformation = session.client('cloudformation')
+createwaiter = cloudformation.get_waiter('stack_create_complete')
+deletewaiter = cloudformation.get_waiter('stack_delete_complete')
+s3 = session.client('s3')
+
+
+
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger('VPC-load-process-' + vpcname + '-'+str((today-datetime.datetime(1970,1,1)).total_seconds()))
+logGroup = '/VPC-load-process/' + vpcname
+logger.addHandler(watchtower.CloudWatchLogHandler(log_group=logGroup))
+
+
+msg = 'Beginning Process'
+logger.info(msg)
+
+if cmd == "create":
+    msg = 'Create process started'
+    logger.info(msg)
+
+    filelist = []
+    filelist.append({ "FileName": "deploy.sh" })
+    filelist.append({ "FileName": "deploy.py" })
+    filelist.append({ "FileName": "deploy-parameters.json" })
+
+    stacklist = []
+    stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
+    stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
+
+    if publicssh == "yes":
+        stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+        stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+    else:
+        stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
+        stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
+
+    if natgateway == "yes":
+        stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+
+    perform_installation(filelist, stacklist)
+
+    msg = "Create process finished"
+    logger.info(msg)
+elif cmd == "addnatgateway":
+    msg = 'Add NAT Gateway process started'
+    logger.info(msg)
+
+    filelist = []
+    filelist.append({ "FileName": "deploy.sh" })
+    filelist.append({ "FileName": "deploy.py" })
+    filelist.append({ "FileName": "deploy-parameters.json" })
+
+    stacklist = []
+    stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+
+    perform_installation(filelist, stacklist)
+
+    msg = "Add NAT Gateway process finished"
+    logger.info(msg)
+elif cmd == "removenatgateway":
+    msg = 'Remove NAT Gateway process started'
+    logger.info(msg)
+
+    deletestacklist = []
+    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+
+    perform_removal(deletestacklist)
+
+    msg = "Remove NAT Gateway process finished"
+    logger.info(msg)
+elif cmd == "remove":
+    msg = 'Remove process started'
+    logger.info(msg)
+
+    deletestacklist = []
+    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+    deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
+    deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
+    deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
+    deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+    deletestacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
+    deletestacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
+
+
+    perform_removal(deletestacklist)
 
     msg = 'Remove process finished'
     logger.info(msg)
