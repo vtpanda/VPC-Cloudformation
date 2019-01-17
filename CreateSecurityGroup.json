@@ -12,7 +12,7 @@
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupName" : "SQLDMZ",
-        "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
+        "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from the WebDMZ.",
         "SecurityGroupIngress" : [
           {
             "SourceSecurityGroupId" : { "Ref" : "WebDMZ" },
@@ -35,10 +35,10 @@
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupName" : "SSHDMZ",
-        "GroupDescription" : "Limits inbound traffic to only SSH from anywhere in the world.",
+        "GroupDescription" : "Limits inbound traffic to only SSH from anywhere withinin the VPC.",
         "SecurityGroupIngress" : [
           {
-            "CidrIp" : "0.0.0.0/0",
+            "CidrIp" : "10.0.0.0/16",
             "FromPort" : 22,
             "ToPort" : 22,
             "IpProtocol" : 6
@@ -52,10 +52,10 @@
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupName" : "WebDMZ",
-        "GroupDescription" : "Limits inbound traffic to only SSH and HTTP(S) from anywhere in the world.",
+        "GroupDescription" : "Limits inbound traffic to only HTTP(S) from anywhere in the world and SSH from within the VPC.",
         "SecurityGroupIngress" : [
           {
-            "CidrIp" : "0.0.0.0/0",
+            "CidrIp" : "10.0.0.0/16",
             "FromPort" : 22,
             "ToPort" : 22,
             "IpProtocol" : 6
@@ -81,7 +81,7 @@
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupName" : "RDSDMZ",
-        "GroupDescription" : "Limits inbound traffic to only SSH and MySQL/Aurora from within the VPC.",
+        "GroupDescription" : "Limits inbound traffic to only MySQL/Aurora from within the VPC.",
         "SecurityGroupIngress" : [
           {
             "SourceSecurityGroupId" : { "Ref" : "WebDMZ" },

@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
-  "Description": "NatGateway Instantiation for a VPC in US-East-1; Note that this is only IPv4",
+  "Description": "NatGateway Instantiation for a VPC; Note that this is only IPv4",
   "Parameters": {
     "VPCName": {
       "Description": "Identifier to use for the VPC.",

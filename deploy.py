@@ -1,5 +1,3 @@
-#!/usr/local/bin/python3
-
 import boto3
 import watchtower
 import logging
@@ -95,7 +93,6 @@ vpcname = params.get("vpcname", "none")
 uploadbucket = params.get("uploadbucket", "none")
 uploadpath = params.get("uploadpath", "none")
 natgateway = params.get("natgateway", "no")
-publicssh = params.get("publicssh", "no")
 region = session.region_name
 deploymentfolders3 = "s3://" + uploadbucket + "/" + uploadpath
 deploymentfolderhttp = "https://s3.amazonaws.com/" + uploadbucket + "/" + uploadpath
@@ -129,13 +126,9 @@ if cmd == "create":
     stacklist = []
     stacklist.append({ "StackName": vpcname, "StackTemplateName": "CreateVPC.json" })
     stacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
+    stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
+    stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
 
-    if publicssh == "yes":
-        stacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
-        stacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
-    else:
-        stacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
-        stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
 
     if natgateway == "yes":
         stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
@@ -177,8 +170,6 @@ elif cmd == "remove":
 
     deletestacklist = []
     deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
-    deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
-    deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
     deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })
     deletestacklist.append({ "StackName": vpcname + "-NaclEntry-" + region, "StackTemplateName": "CreateNetworkACLEntry.json" })
     deletestacklist.append({ "StackName": vpcname + "-Subnet-" + region, "StackTemplateName": "CreateSubnet-US-East-1.json" })
