@@ -32,12 +32,12 @@ Enter your AWS Access Key Id and AWS Secret Access Key.  Enter us-east-1 for you
   * uploadpath - path to upload scripts to within the S3 bucket
   * natgateway - [yes|no] - when running the create command, determines whether to create Nat Gateways in the two public subnets; note that Nat Gateways incur AWS charges, so don't leave these running if you don't need them
 2. The following commands are available:
-  * ./deploy.sh create - creates the entire VPC, Subnets, Internet Gateay, NACL's, Security Groups, Route Tables;
-    * If the natgateway parameter is set to yes, then it also creates the Nat Gateways, their associated Elastic IP Addresses, entries in the private Route Tables, and entries in the private NACL's.
+  * ./deploy.sh create - creates the entire VPC, Subnets, Internet Gateway, NACL's, Security Groups, Route Tables;
+    * If the natgateway parameter is set to yes, then it also creates the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
   * ./deploy.sh remove - remove the entire VPC and associated bits and pieces, including the Nat Gateways
-  * ./deploy.sh addnatgateway - creates the Nat Gateways, their associated Elastic IP Addresses, entries in the private Route Tables, and entries in the private NACL's.
+  * ./deploy.sh addnatgateway - creates the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
     * Assumes that the VPC has already been created, but without the Nat Gatways
-  * ./deploy.sh removenatgateway - removes the Nat Gateways, their associated Elastic IP Addresses, entries in the private Route Tables, and entries in the private NACL's.
+  * ./deploy.sh removenatgateway - removes the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
     * Leaves the rest of the VPC intact.
 
 ## Notes
