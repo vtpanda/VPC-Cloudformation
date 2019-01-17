@@ -32,15 +32,32 @@ Enter your AWS Access Key Id and AWS Secret Access Key.  Enter us-east-1 for you
   * uploadpath - path to upload scripts to within the S3 bucket
   * natgateway - [yes|no] - when running the create command, determines whether to create Nat Gateways in the two public subnets; note that Nat Gateways incur AWS charges, so don't leave these running if you don't need them
 2. The following commands are available:
-  * ./deploy.sh create - creates the entire VPC, Subnets, Internet Gateway, NACL's, Security Groups, Route Tables;
+```
+./deploy.sh create
+```
+  * Creates the entire VPC, Subnets, Internet Gateway, NACL's, Security Groups, Route Tables;
     * If the natgateway parameter is set to yes, then it also creates the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
-  * ./deploy.sh remove - remove the entire VPC and associated bits and pieces, including the Nat Gateways
-  * ./deploy.sh addnatgateway - creates the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
+
+  ```
+  ./deploy.sh remove
+  ```
+  * Removes the entire VPC and associated bits and pieces, including the Nat Gateways
+
+  ```
+  ./deploy.sh addnatgateway
+  ```
+  * Creates the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
     * Assumes that the VPC has already been created, but without the Nat Gatways
-  * ./deploy.sh removenatgateway - removes the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
+
+  ```
+  ./deploy.sh removenatgateway
+  ```
+  * Removes the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
     * Leaves the rest of the VPC intact.
 
 ## Notes
-* The SSH ports for the public subnets won't be quite perfect.  The SSH ports in the public NACL's will be open to the world, however they will be limited to within the VPC for the two public security groups: "Public - WebDMZ" and "Public - SSHDMZ".  The idea is that you really only want to allow SSH access into boxes from specific IP addresses.  Therefore, to give yourself SSH access to boxes that are in either "Public - WebDMZ" or "Public - SSHDMZ", you need to manually go in to those security groups and allow your IP address.
+* The SSH ports for the public subnets will need to be tweaked to allow access after the VPC is created.  The SSH ports in the public NACL's will be open to the world (which I'm not crazy about, but maybe this is the way to do it), however they will be limited to within the VPC for the two public security groups: "Public - WebDMZ" and "Public - SSHDMZ".  The idea is that you really only want to allow SSH access into boxes from specific IP addresses.  Therefore, to give yourself SSH access to boxes that are in either "Public - WebDMZ" or "Public - SSHDMZ", you need to manually go in to those security groups and allow your IP address.
 * This currently only works on macOS/Linux.
 * This also currently only works with the us-east-1 region.  (At some point I might create future release to allow deployment into additional regions.)
+* I'd like feedback particularly on my NACL permissions and Security Group permissions.  I've taken a crack at a useful set of permissions to cover the common use-case of web server on the front end and database (on either EC2 or RDS) on the backend, along with the need to SSH into the servers.
+  * I've just recently opened inbound HTTP(s) ports to the world in the private NACL's in an attempt to make yum work better from the private subnet (which it seems to, most of the time, but not all of the time).  I'm not fond of having these inbound HTTP(s) ports open to to the world in the private subnet, but maybe this is okay.
