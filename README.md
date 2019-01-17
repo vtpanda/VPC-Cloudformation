@@ -1,5 +1,5 @@
 # VPC-Cloudformation
-This set of CloudFormation scripts set up a reference VPC with the following components.
+This set of CloudFormation scripts sets up a reference VPC.
 
 ## Installation
 To use this, do the following:
