@@ -33,22 +33,7 @@
       "DependsOn": [ "VPCInternetGateway", "MainVPC" ]
     } ,
 
-    "PublicNACL": {
-      "Type" : "AWS::EC2::NetworkAcl",
-      "Properties" : {
-        "VpcId" : { "Ref" : "MainVPC" },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
-      },
-      "DependsOn": [ "MainVPC" ]
-    },
-    "PrivateNACL": {
-      "Type" : "AWS::EC2::NetworkAcl",
-      "Properties" : {
-        "VpcId" : { "Ref" : "MainVPC" },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
-      },
-      "DependsOn": [ "MainVPC" ]
-    },
+
     "PublicRouteTable": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
@@ -65,14 +50,6 @@
         "GatewayId" : { "Ref" : "VPCInternetGateway" }
       },
       "DependsOn": [ "PublicRouteTable", "VPCInternetGatewayAttachment", "VPCInternetGateway" ]
-    },
-    "PrivateRouteTable": {
-      "Type" : "AWS::EC2::RouteTable",
-      "Properties" : {
-        "VpcId" : { "Ref" : "MainVPC" },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
-      },
-      "DependsOn": [ "MainVPC" ]
     }
   },
   "Outputs" : {
@@ -89,27 +66,6 @@
       "Value" : { "Ref" : "PublicRouteTable" },
       "Export" : {
         "Name" : { "Fn::Sub": [ "RouteTable-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
-      }
-    },
-    "PrivateRouteTableOutput" : {
-      "Description" : "Private Route Table",
-      "Value" : { "Ref" : "PrivateRouteTable" },
-      "Export" : {
-        "Name" : { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
-      }
-    },
-    "PublicNACLOutput" : {
-      "Description" : "Public NACL",
-      "Value" : { "Ref" : "PublicNACL" },
-      "Export" : {
-        "Name" : { "Fn::Sub": [ "NACL-Public-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
-      }
-    },
-    "PrivateNACLOutput" : {
-      "Description" : "Private NACL",
-      "Value" : { "Ref" : "PrivateNACL" },
-      "Export" : {
-        "Name" : { "Fn::Sub": [ "NACL-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]}
       }
     },
     "VPCInternetGatewayOutput" : {

@@ -8,32 +8,58 @@
     }
   },
   "Resources": {
-    "EIP": {
+    "EIP1a": {
       "Type" : "AWS::EC2::EIP",
       "Properties" : {
       "Domain" : "vpc"
     }
   },
+  "EIP1b": {
+    "Type" : "AWS::EC2::EIP",
+    "Properties" : {
+    "Domain" : "vpc"
+  }
+},
   "NatGatewayUsEast1a": {
     "Type" : "AWS::EC2::NatGateway",
     "Properties" : {
       "AllocationId" : {
-            "Fn::GetAtt" : ["EIP", "AllocationId"]
+            "Fn::GetAtt" : ["EIP1a", "AllocationId"]
           },
-      "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
     },
-    "DependsOn": [ "EIP" ]
+    "DependsOn": [ "EIP1a" ]
   },
-  "PrivateRouteInternet": {
+  "NatGatewayUsEast1b": {
+    "Type" : "AWS::EC2::NatGateway",
+    "Properties" : {
+      "AllocationId" : {
+            "Fn::GetAtt" : ["EIP1b", "AllocationId"]
+          },
+      "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+    },
+    "DependsOn": [ "EIP1b" ]
+  },
+  "PrivateRouteInternet1a": {
     "Type" : "AWS::EC2::Route",
     "Properties" : {
       "DestinationCidrBlock" : "0.0.0.0/0",
-      "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+      "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
       "NatGatewayId" : { "Ref" : "NatGatewayUsEast1a" }
       },
       "DependsOn": [ "NatGateway" ]
     },
+    "PrivateRouteInternet1b": {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "RouteTableId" : { "Fn::ImportValue": { "Fn::Sub": [ "RouteTable-Private-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "NatGatewayId" : { "Ref" : "NatGatewayUsEast1b" }
+        },
+        "DependsOn": [ "NatGateway" ]
+      },
     "PrivateNACLEntryHTTPOutboundInternet": {
       "Type" : "AWS::EC2::NetworkAclEntry",
       "Properties" : {
