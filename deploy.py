@@ -138,7 +138,7 @@ if cmd == "create":
         stacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
 
     if natgateway == "yes":
-        stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+        stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
 
     perform_installation(filelist, stacklist)
 
@@ -154,7 +154,7 @@ elif cmd == "addnatgateway":
     filelist.append({ "FileName": "deploy-parameters.json" })
 
     stacklist = []
-    stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+    stacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
 
     perform_installation(filelist, stacklist)
 
@@ -165,7 +165,7 @@ elif cmd == "removenatgateway":
     logger.info(msg)
 
     deletestacklist = []
-    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
 
     perform_removal(deletestacklist)
 
@@ -176,7 +176,7 @@ elif cmd == "remove":
     logger.info(msg)
 
     deletestacklist = []
-    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway-US-East-1.json" })
+    deletestacklist.append({ "StackName": vpcname + "-NatGateway-" + region, "StackTemplateName": "CreateNatGateway.json" })
     deletestacklist.append({ "StackName": vpcname + "-SecurityGroupNoSSH-" + region, "StackTemplateName": "CreateSecurityGroupNoPublicSSH.json" })
     deletestacklist.append({ "StackName": vpcname + "-NaclEntryNoPublicSSH-" + region, "StackTemplateName": "CreateNetworkACLEntryNoPublicSSH.json" })
     deletestacklist.append({ "StackName": vpcname + "-SecurityGroup-" + region, "StackTemplateName": "CreateSecurityGroup.json" })

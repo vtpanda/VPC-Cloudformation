@@ -27,28 +27,28 @@
     "SubnetAssocPublic1a" : {
       "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties" : {
-        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
         "NetworkAclId" : { "Ref" : "PublicNACL" }
       }
     },
     "SubnetAssocPublic1b" : {
       "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties" : {
-        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-us-east-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
         "NetworkAclId" : { "Ref" : "PublicNACL" }
       }
     },
     "SubnetAssocPrivate1a" : {
       "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties" : {
-        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Private-us-east-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Private-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
         "NetworkAclId" : { "Ref" : "PrivateNACL" }
       }
     },
     "SubnetAssocPrivate1b" : {
       "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties" : {
-        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Private-us-east-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Private-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
         "NetworkAclId" : { "Ref" : "PrivateNACL" }
       }
     },
