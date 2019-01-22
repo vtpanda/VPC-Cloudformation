@@ -108,7 +108,7 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger('VPC-load-process-' + vpcname + '-'+str((today-datetime.datetime(1970,1,1)).total_seconds()))
 logGroup = '/VPC-load-process/' + vpcname
-logger.addHandler(watchtower.CloudWatchLogHandler(log_group=logGroup))
+logger.addHandler(watchtower.CloudWatchLogHandler(log_group=logGroup, boto3_session=session))
 
 
 msg = 'Beginning Process'
