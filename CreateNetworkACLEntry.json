@@ -12,14 +12,24 @@
       "Type" : "AWS::EC2::NetworkAcl",
       "Properties" : {
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateNetworkACLEntry.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
     "PrivateNACL": {
       "Type" : "AWS::EC2::NetworkAcl",
       "Properties" : {
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateNetworkACLEntry.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "NACL - Private - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
 

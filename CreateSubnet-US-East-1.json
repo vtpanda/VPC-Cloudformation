@@ -14,7 +14,12 @@
         "AvailabilityZone" : "us-east-1a",
         "CidrBlock" : "10.0.1.0/24",
         "MapPublicIpOnLaunch" : true,
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.1.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.1.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -24,7 +29,12 @@
         "AvailabilityZone" : "us-east-1b",
         "CidrBlock" : "10.0.2.0/24",
         "MapPublicIpOnLaunch" : true,
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.2.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "Public - 10.0.2.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -34,7 +44,12 @@
         "AvailabilityZone" : "us-east-1a",
         "CidrBlock" : "10.0.11.0/24",
         "MapPublicIpOnLaunch" : false,
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.11.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.11.0 - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -44,7 +59,12 @@
         "AvailabilityZone" : "us-east-1b",
         "CidrBlock" : "10.0.12.0/24",
         "MapPublicIpOnLaunch" : false,
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.12.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "Private - 10.0.12.0 - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -52,14 +72,24 @@
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - us-east-1a - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
     "PrivateRouteTable1b": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateSubnet-US-East-1.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Private - us-east-1b - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
     "RouteTableAssocPublic1a": {

@@ -27,7 +27,12 @@
             "IpProtocol" : 6
           }
         ],
-        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SQLDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" :  [
+          { "Key": "CloudFormationScript", "Value": "CreateSecurityGroup.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SQLDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -44,7 +49,12 @@
             "IpProtocol" : 6
           }
         ],
-        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" :  [
+          { "Key": "CloudFormationScript", "Value": "CreateSecurityGroup.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -73,7 +83,12 @@
             "IpProtocol" : 6
           }
         ],
-        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - WebDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" :  [
+          { "Key": "CloudFormationScript", "Value": "CreateSecurityGroup.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Public - WebDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -90,7 +105,12 @@
             "IpProtocol" : 6
           }
         ],
-        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - RDSDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" :  [
+          { "Key": "CloudFormationScript", "Value": "CreateSecurityGroup.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - RDSDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     },
@@ -107,7 +127,12 @@
             "IpProtocol" : 6
           }
         ],
-        "Tags" :  [ { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ],
+        "Tags" :  [
+          { "Key": "CloudFormationScript", "Value": "CreateSecurityGroup.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "SecurityGroup - EC2 - Private - SSHDMZ - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ],
         "VpcId" : { "Fn::ImportValue": { "Fn::Sub": [ "VPC-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
       }
     }

@@ -15,13 +15,23 @@
         "EnableDnsSupport" : true,
         "EnableDnsHostnames" : true,
         "InstanceTenancy" : "default",
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "VPC - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateVPC.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "VPC - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
     "VPCInternetGateway" : {
       "Type" : "AWS::EC2::InternetGateway",
         "Properties" : {
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "InternetGateway - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateVPC.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "InternetGateway - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       }
     },
     "VPCInternetGatewayAttachment" : {
@@ -38,7 +48,12 @@
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "MainVPC" },
-        "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+        "Tags" : [
+          { "Key": "CloudFormationScript", "Value": "CreateVPC.json" },
+          { "Key": "Source", "Value": "CloudFormation" },
+          { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+          { "Key": "Name", "Value": { "Fn::Sub": [ "RouteTable - Public - ${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+        ]
       },
       "DependsOn": [ "MainVPC" ]
     },

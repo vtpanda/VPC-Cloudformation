@@ -27,7 +27,12 @@
             "Fn::GetAtt" : ["EIP1a", "AllocationId"]
           },
       "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      "Tags" : [
+        { "Key": "CloudFormationScript", "Value": "CreateNatGateway.json" },
+        { "Key": "Source", "Value": "CloudFormation" },
+        { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1a-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      ]
     },
     "DependsOn": [ "EIP1a" ]
   },
@@ -38,7 +43,12 @@
             "Fn::GetAtt" : ["EIP1b", "AllocationId"]
           },
       "SubnetId" : { "Fn::ImportValue": { "Fn::Sub": [ "Public-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
-      "Tags" : [ { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} } ]
+      "Tags" : [
+        { "Key": "CloudFormationScript", "Value": "CreateNatGateway.json" },
+        { "Key": "Source", "Value": "CloudFormation" },
+        { "Key": "VPCName", "Value": { "Fn::Sub": [ "${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} },
+        { "Key": "Name", "Value": { "Fn::Sub": [ "NATGateway-1b-${VPCName}", { "VPCName": {"Ref" : "VPCName" }} ]} }
+      ]
     },
     "DependsOn": [ "EIP1b" ]
   },
