@@ -1,7 +1,7 @@
 # VPC-Cloudformation
 This set of CloudFormation scripts sets up a reference VPC.
 
-## Installation
+## Installation (Mac Only)
 To use this, do the following:
 1. install python3
 2. install boto3 -
@@ -24,7 +24,7 @@ Enter your AWS Access Key Id and AWS Secret Access Key.  Enter us-east-1 for you
 
 6. Create an S3 bucket to upload deployment and cloudformation scripts to.
 
-## Running
+## Running (Mac Only)
 1. Open the delpoy-parameters.json file and edit the following:
   * profile - profile name defined in your AWS configuration
   * vpcname - identifier of the VPC you'd like to create; this will be used in the name of all of the components
@@ -54,6 +54,18 @@ Enter your AWS Access Key Id and AWS Secret Access Key.  Enter us-east-1 for you
   ```
   * Removes the Nat Gateways, their associated Elastic IP Addresses, and entries in the private Route Tables.
     * Leaves the rest of the VPC intact.
+
+## If you don't have a Mac:
+If you don't have a Mac, you can manually build the reference VPC by going into the AWS Console in us-east-1 (Northern Virginia), navigating to CloudFormation, and manually running the following CloudFormation templates, in order:
+1. CreateVPC.json
+2. CreateSubnet-US-East-1.json
+3. CreateNetworkACLEntry.json
+4. CreateSecurityGroup.json
+5. CreateNatGateway.json (only if you need this; AWS charges for this)
+
+Use the same VPCName value for each of the five templates.
+
+To Uninstall manually, delete each of the stacks in reverse order.
 
 ## Notes
 * The SSH ports for the public subnets will need to be tweaked to allow access after the VPC is created.  The SSH ports in the public NACL's will be open to the world (which I'm not crazy about, but maybe this is the way to do it), however they will be limited to within the VPC for the two public security groups: "Public - WebDMZ" and "Public - SSHDMZ".  The idea is that you really only want to allow SSH access into boxes from specific IP addresses.  Therefore, to give yourself SSH access to boxes that are in either "Public - WebDMZ" or "Public - SSHDMZ", you need to manually go in to those security groups and allow your IP address.
